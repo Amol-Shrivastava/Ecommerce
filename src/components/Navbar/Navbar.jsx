@@ -83,9 +83,7 @@ const PrimarySearchAppBar = ({ totalItems }) => {
                   color="inherit"
                   onClick={() => loginWithRedirect()}
                 >
-                  <Badge color="secondary">
-                    <LockOpen />
-                  </Badge>
+                  <LockOpen />
                 </IconButton>
               )}
 
@@ -95,13 +93,11 @@ const PrimarySearchAppBar = ({ totalItems }) => {
                   color="inherit"
                   onClick={() => logout()}
                 >
-                  <Badge color="secondary">
-                    <LockIcon />
-                  </Badge>
+                  <LockIcon />
                 </IconButton>
               )}
 
-              {isAutheticated && (
+              {isAuthenticated && (
                 <IconButton
                   component={Link}
                   to="/cart"
