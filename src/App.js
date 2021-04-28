@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { CssBaseline } from '@material-ui/core';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { CssBaseline } from "@material-ui/core";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
-import { Navbar, Products, Cart, Checkout } from './components';
-import { commerce } from './lib/commerce';
-
+import { Navbar, Products, Cart, Checkout } from "./components";
+import { commerce } from "./lib/commerce";
+import { useAuth0 } from "@auth0/auth0-react";
 const App = () => {
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState({});
   const [order, setOrder] = useState({});
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
+  const { isAuthenticated } = useAuth0();
 
   const fetchProducts = async () => {
     const { data } = await commerce.products.list();
@@ -54,7 +55,10 @@ const App = () => {
 
   const handleCaptureCheckout = async (checkoutTokenId, newOrder) => {
     try {
-      const incomingOrder = await commerce.checkout.capture(checkoutTokenId, newOrder);
+      const incomingOrder = await commerce.checkout.capture(
+        checkoutTokenId,
+        newOrder
+      );
 
       setOrder(incomingOrder);
 
@@ -73,20 +77,40 @@ const App = () => {
 
   return (
     <Router>
-      <div style={{ display: 'flex' }}>
+      <div style={{ display: "flex" }}>
         <CssBaseline />
-        <Navbar totalItems={cart.total_items} handleDrawerToggle={handleDrawerToggle} />
-        <Switch>
-          <Route exact path="/">
-            <Products products={products} onAddToCart={handleAddToCart} handleUpdateCartQty />
-          </Route>
-          <Route exact path="/cart">
-            <Cart cart={cart} onUpdateCartQty={handleUpdateCartQty} onRemoveFromCart={handleRemoveFromCart} onEmptyCart={handleEmptyCart} />
-          </Route>
-          <Route path="/checkout" exact>
-            <Checkout cart={cart} order={order} onCaptureCheckout={handleCaptureCheckout} error={errorMessage} />
-          </Route>
-        </Switch>
+        <Navbar
+          totalItems={cart.total_items}
+          handleDrawerToggle={handleDrawerToggle}
+        />
+
+        {isAuthenticated && (
+          <Switch>
+            <Route exact path="/">
+              <Products
+                products={products}
+                onAddToCart={handleAddToCart}
+                handleUpdateCartQty
+              />
+            </Route>
+            <Route exact path="/cart">
+              <Cart
+                cart={cart}
+                onUpdateCartQty={handleUpdateCartQty}
+                onRemoveFromCart={handleRemoveFromCart}
+                onEmptyCart={handleEmptyCart}
+              />
+            </Route>
+            <Route path="/checkout" exact>
+              <Checkout
+                cart={cart}
+                order={order}
+                onCaptureCheckout={handleCaptureCheckout}
+                error={errorMessage}
+              />
+            </Route>
+          </Switch>
+        )}
       </div>
     </Router>
   );
