@@ -100,19 +100,21 @@ const PrimarySearchAppBar = ({ totalItems }) => {
                   </Badge>
                 </IconButton>
               )}
+
+              {isAutheticated && (
+                <IconButton
+                  component={Link}
+                  to="/cart"
+                  aria-label="Show cart items"
+                  color="inherit"
+                >
+                  <Badge badgeContent={totalItems} color="secondary">
+                    <ShoppingCart />
+                  </Badge>
+                </IconButton>
+              )}
             </div>
           )}
-
-          <IconButton
-            component={Link}
-            to="/cart"
-            aria-label="Show cart items"
-            color="inherit"
-          >
-            <Badge badgeContent={totalItems} color="secondary">
-              <ShoppingCart />
-            </Badge>
-          </IconButton>
         </Toolbar>
       </AppBar>
       {renderMobileMenu}
